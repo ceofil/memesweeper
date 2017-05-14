@@ -31,12 +31,19 @@ void MemeField::Tile::Draw(const Vei2 & screenPos, Graphics & gfx) const
 
 void MemeField::Draw(Graphics & gfx) const
 {
+	int k = 0;
 	gfx.DrawRect(GetRect(), SpriteCodex::baseColor);
-	for (Vei2 gridPos = { 0,0 }; gridPos.y < height; gridPos.y++) {
-		for(gridPos.x=0;gridPos.x<width;gridPos.x++){
+
+	for (int x = 0; x < width; x++) {
+		for (int y = 0; y < height; y++) {
+			Vei2 gridPos = { x,y };
 			TileAt(gridPos).Draw(gridPos*SpriteCodex::tileSize + Vei2(leftField,topField),gfx);
+			k++;
 		}
 	}
+
+
+
 }
 
 void MemeField::Update(Mouse& mouse)
@@ -47,21 +54,11 @@ void MemeField::Update(Mouse& mouse)
 		const auto e = mouse.Read();
 		if (e.GetType() == Mouse::Event::Type::LPress)
 		{
-			Vei2 gridPos = ScreenToGrid(mouse.GetPos());
-			Tile& tile = TileAt(gridPos);
-			if (tile.IsHidden())
-			{
-				tile.Reveal();
-			}
+			OnRevealClick(mouse.GetPos());
 		}
 		else if (e.GetType() == Mouse::Event::Type::RPress)
 		{
-			Vei2 gridPos = ScreenToGrid(mouse.GetPos());
-			Tile& tile = TileAt(gridPos);
-			if (!tile.IsRevealed())
-			{
-				tile.Flag();
-			}
+			OnFlagClick(mouse.GetPos());
 		}
 	}
 	
@@ -80,21 +77,27 @@ Vei2 MemeField::ScreenToGrid(const Vei2 & screenPos)
 
 void MemeField::OnRevealClick(const Vei2 & screenPos)
 {
-	Vei2 gridPos = ScreenToGrid(screenPos);
-	Tile& tile = TileAt(gridPos);
-	if (!tile.IsRevealed())
+	if (GetRect().Contains(screenPos))
 	{
-		tile.Reveal();
+		Vei2 gridPos = ScreenToGrid(screenPos);
+		Tile& tile = TileAt(gridPos);
+		if (!tile.IsRevealed() && !tile.IsFlagged())
+		{
+			tile.Reveal();
+		}
 	}
 }
 
 void MemeField::OnFlagClick(const Vei2 & screenPos)
 {
-	Vei2 gridPos = ScreenToGrid(screenPos);
-	Tile& tile = TileAt(gridPos);
-	if (!tile.IsRevealed())
+	if (GetRect().Contains(screenPos))
 	{
-		tile.Flag();
+		Vei2 gridPos = ScreenToGrid(screenPos);
+		Tile& tile = TileAt(gridPos);
+		if (!tile.IsRevealed())
+		{
+			tile.Flag();
+		}
 	}
 }
 
@@ -150,14 +153,17 @@ MemeField::MemeField()
 		} while(TileAt(pos).HasMeme());
 		TileAt(pos).PlaceMeme();
 	}
+	for (int i = 0; i < nTiles/2; i++) {
+		tiles[i].Reveal();
+	}
 }
 
 MemeField::Tile & MemeField::TileAt(const Vei2 pos)
 {
-	return tiles[pos.x + pos.y*height];
+	return tiles[pos.x + pos.y*width];
 }
 
 const MemeField::Tile & MemeField::TileAt(const Vei2 pos) const
 {
-	return tiles[pos.x + pos.y*height];
+	return tiles[pos.x + pos.y*width];
 }

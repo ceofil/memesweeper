@@ -39,14 +39,15 @@ private:
 
 
 private:
-	static constexpr int width = 10;
-	static constexpr int height = 10;
-	static constexpr int spawnMemeRate = 25; 
-	static constexpr int nMemes = width * height * spawnMemeRate / 100;
-	static constexpr int leftField = (Graphics::ScreenWidth - width * SpriteCodex::tileSize) / 2;
-	static constexpr int topField = (Graphics::ScreenHeight - height * SpriteCodex::tileSize) / 2;
+	static constexpr int width = Graphics::ScreenWidth / SpriteCodex::tileSize ;
+	static constexpr int height = Graphics::ScreenHeight / SpriteCodex::tileSize ;
+	static constexpr int nTiles = width * height;
+	static constexpr int spawnMemeRate = 10; 
+	static constexpr int nMemes = nTiles * spawnMemeRate / 100;
+	static constexpr int leftField =  (Graphics::ScreenWidth - width * SpriteCodex::tileSize) / 2;
+	static constexpr int topField =  (Graphics::ScreenHeight - height * SpriteCodex::tileSize) / 2;
 private:
-	Tile tiles[width*height];
+	Tile tiles[nTiles];
 	Tile& TileAt(const Vei2 pos);
 	const Tile& TileAt(const Vei2 pos)const;
 };
