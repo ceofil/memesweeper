@@ -14,6 +14,7 @@ public:
 	static RectI FromCenter( const Vei2& center,int halfWidth,int halfHeight );
 	RectI GetExpanded( int offset ) const;
 	Vei2 GetCenter() const;
+	bool Contains(const Vei2& point);
 public:
 	int left;
 	int right;
