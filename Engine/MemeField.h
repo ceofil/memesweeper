@@ -13,10 +13,16 @@ public:
 	Vei2 ScreenToGrid(const Vei2& screenPos);
 	void OnRevealClick(const Vei2& screenPos);
 	void OnFlagClick(const Vei2& screenPos);
+	int CountNeighboursMemes(const Vei2& gridPos);
+	void RevealNeighours(const Vei2& gridPos);
+	bool Win();
+	bool defeat = false;
+	bool win = false;
 private:
 	class Tile
 	{
 	public:
+		int NeighboursMemes = -1;
 		void PlaceMeme();
 		void Draw(const Vei2& screenPos, Graphics& gfx) const;
 		bool HasMeme() const;
@@ -39,8 +45,8 @@ private:
 
 
 private:
-	static constexpr int width = Graphics::ScreenWidth / SpriteCodex::tileSize ;
-	static constexpr int height = Graphics::ScreenHeight / SpriteCodex::tileSize ;
+	static constexpr int width =  Graphics::ScreenWidth / SpriteCodex::tileSize - 2;
+	static constexpr int height =  Graphics::ScreenHeight / SpriteCodex::tileSize - 2;
 	static constexpr int nTiles = width * height;
 	static constexpr int spawnMemeRate = 10; 
 	static constexpr int nMemes = nTiles * spawnMemeRate / 100;
